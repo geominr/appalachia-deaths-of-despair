@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title></title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src="https://api.mapbox.com/mapbox-gl-js/v1.6.1/mapbox-gl.js"></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.40.0/mapbox-gl.css' rel='stylesheet' />
+	<link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="assets/images/apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="assets/images/apple-touch-icon-114x114.png">
+	<!-- Web Fonts-->
+	<link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600%7cPlayfair+Display:400i" rel="stylesheet">
+	<link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+	<!-- Plugins-->
+	<link href="assets/css/plugins.min.css" rel="stylesheet">
+	<!-- Template core CSS-->
+	<link href="assets/css/template.css" rel="stylesheet">
+    <style>
+        body { margin:0; padding:0; }
+		#legend { height:10%; width:100%; bottom:90% }
+        #map { position:absolute; top:10%; height:90%; width:100%; }
+    </style>
+</head>
+<body>
+
+<style>
+
+	.btn {
+		margin:1% 0%;
+		width:8%;
+		height:9%;
+	}
+
+</style>
+<div id='legend'>
+	<a class="btn" style="background-color: #fba423">MC1</a>
+	<a class="btn" style="background-color: #67d704">MC2</a>
+	<a class="btn" style="background-color: #1985c8">MC3</a>
+	<a class="btn" style="background-color: #f2a1d1">MC4</a>
+	<a class="btn" style="background-color: #d82b22">MC5</a>
+	<a class="btn" style="background-color: #286722">MC6</a>
+	<a class="btn" style="background-color: #1bc8de">MC7</a>
+	<a class="btn" style="background-color: #831dbf">MC8</a>
+	<a class="btn" style="background-color: #d44986">MC9</a>
+	<a class="btn" style="background-color: #c2c473">MC10</a>
+	<a class="btn" style="background-color: #61326c">MC11</a>
+	<a class="btn" style="background-color: #882b2b">MC12</a>
+</div>
+<div id='map'></div>
+  
+<script>
+mapboxgl.accessToken = 'pk.eyJ1IjoicmFhbmFuLWciLCJhIjoiY2pyMWF5YzM4MDBseTQzcXEyZ3gxN2xvOSJ9.Jm_gHZ3zcJh2xygKeOdr5w';
+var map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/raanan-g/ckpk0i0gr10c417qglhenamur',
+    center: [-81.988,37.116],
+    minZoom: 6,
+    zoom: 6.04
+});
+
+	
+map.on('load', function() {
+	var popup = new mapboxgl.Popup({
+		closeButton: false,
+		closeOnClick: true
+	});
+	map.on('mouseover', 'mc-nodoubt2-aqg25t', function(e){
+		/**/
+		var coordinates = e.lngLat;
+		//console.log(coordinates);
+		var description = "<h4 style='color:black'>"+ e.features[0].properties.metacluster +"</h4>";
+
+		// Ensure that if the map is zoomed out such that multiple
+		// copies of the feature are visible, the popup appears
+		// over the copy being pointed to.
+		while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+		coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+		}
+
+		// Populate the popup and set its coordinates
+		// based on the feature found.
+		popup.setLngLat(coordinates).setHTML(description).addTo(map);
+	})
+	map.on('mouseleave', 'mc-nodoubt2-aqg25t', function () {
+		map.getCanvas().style.cursor = '';
+		popup.remove();
+	});
+	map.on('mouseover', 'mc-doubtful-v2-11yubp', function(e){
+		map.getCanvas().style.cursor = 'pointer';
+	});
+	map.on('mouseleave', 'mc-nodoubt2-aqg25t', function () {
+		map.getCanvas().style.cursor = '';
+	});
+	map.on('click', 'mc-doubtful-v2-11yubp', function(e){
+		var coordinates = e.lngLat;
+		//console.log(coordinates);
+		var description = "<h1 style='color:darkblue'>"+e.features[0].properties.FIPS+"</h1><h4 style='color:black'>"+ e.features[0].properties.MC +"</h4>";
+
+		// Ensure that if the map is zoomed out such that multiple
+		// copies of the feature are visible, the popup appears
+		// over the copy being pointed to.
+		while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+		coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+		}
+
+		// Populate the popup and set its coordinates
+		// based on the feature found.
+		popup.setLngLat(coordinates).setHTML(description).addTo(map);
+	})
+	
+});
+
+</script>
+
+</body>
+</html>
