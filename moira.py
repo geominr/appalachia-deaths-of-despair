@@ -5,7 +5,10 @@ import numpy as np
 def log_in(username, password):
     payload = "username="+username+"&password="+password
     headers = {'Host': "moira.pitt.edu",'Content-Type': "application/x-www-form-urlencoded"}
-    response = requests.request("POST", "https://moira.pitt.edu/api/login", data=payload, headers=headers)
+    response = requests.request(
+        "POST", "https://moira.pitt.edu/api/login", 
+        data=payload, headers=headers
+    )
     x = response.json()
     token = "Bearer {}".format(x["token"])
     return token
@@ -55,7 +58,7 @@ def get_matrix(data, values):
         values=values
     ).reset_index()
 
-def load_dod_data(self, level="county"):
+def load_dod_data(username, password, counties, level="county"):
     payload = {
       'timePeriod': ['1979-1983', '1984-1988', '1989-1993', 
                       '1994-1998', '1999-2003', '2004-2008', 
@@ -63,7 +66,7 @@ def load_dod_data(self, level="county"):
        'geoLevel': 'County', 
        'abbreviatedStates': ['AL', 'GA', 'KY', 'MD', 'MS', 'NY', 
                              'NC', 'OH', 'PA', 'SC', 'TN', 'VA', 'WV'],
-       'countyFIPS': list(self.counties420.FIPS),
+       'countyFIPS': counties,
        'geoAggregate': 'Aggregate Selected Counties',
        'ageGroup': "All Default", 'ageGroupCategory': '12', 
        'race': 'All', 'sex': 'All', 
@@ -82,10 +85,10 @@ def load_dod_data(self, level="county"):
     else:
         del payload['geoAggregate']
     # Convert dict to String with double quotes
-    return get_rates(payload, self.username, self.password)
+    return get_rates(payload, username, password)
 
 class DDData():
-    def __init__(self):
+    def __init__(self, username, password):
         self.counties420 = gpd.read_file(
             "data/appalachia_counties"
         )
@@ -93,10 +96,17 @@ class DDData():
             "https://opendata.arcgis.com/datasets/1b02c87f62d24508970dc1a6df80c98e_0.geojson"
         )
         self.states = states[states.geometry.intersects(self.counties420.geometry.unary_union)]
-        self.username = ""
-        self.password = ""
-        self.dod_data = load_dod_data(self)
-        self.dod_data_state = load_dod_data(self, "state")
+        self.username = username
+        self.password = password
+        self.dod_data = load_dod_data(
+            self.username, self.password, 
+            counties=list(self.counties420.FIPS)
+        )
+        self.dod_data_state = load_dod_data(
+            self.username, self.password, 
+            list(self.counties420.FIPS), 
+            level="state"
+        )
         #self.dod_data_region = load_dod_data(self, "region")
         self.mx_aar = get_matrix(self.dod_data, "Age_Adjusted_Rate")
         self.mx_dth = get_matrix(self.dod_data, "Deaths")
