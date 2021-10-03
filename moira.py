@@ -87,7 +87,7 @@ def load_dod_data(self, level="county"):
 class DDData():
     def __init__(self):
         self.counties420 = gpd.read_file(
-            "midwest_420/Deaths of Despair/Deaths_of_Despair/appalachia_counties.shp"
+            "data/appalachia_counties"
         )
         states = gpd.read_file(
             "https://opendata.arcgis.com/datasets/1b02c87f62d24508970dc1a6df80c98e_0.geojson"
@@ -100,9 +100,9 @@ class DDData():
         #self.dod_data_region = load_dod_data(self, "region")
         self.mx_aar = get_matrix(self.dod_data, "Age_Adjusted_Rate")
         self.mx_dth = get_matrix(self.dod_data, "Deaths")
-        self.flexscan_data = pd.read_csv("midwest_420/Deaths of Despair/Deaths_of_Despair/moira_data_new_expected.csv")
-        self.flexscan_results = gpd.read_file("midwest_420/data/clusters_results.shp")
-        self.metaclusters = gpd.read_file("mc_data/metaclusters.geojson")
+        self.flexscan_data = pd.read_csv("data/moira_data_new_expected.csv")
+        self.flexscan_results = gpd.read_file("data/clusters_results")
+        self.metaclusters = gpd.read_file("data/metaclusters.geojson")
     
     def run_rflexscan():
         pass
