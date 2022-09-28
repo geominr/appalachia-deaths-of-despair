@@ -114,13 +114,13 @@ class DDData():
         self.flexscan_results = gpd.read_file("data/clusters_results")
         self.metaclusters = gpd.read_file("data/metaclusters.geojson")
     
-    def run_rflexscan():
+    def run_rflexscan(self):
         pass
     
-    def plot_timeseries():
+    def plot_timeseries(self):
         pass
     
-    def plot_percent_change():
+    def plot_percent_change(self):
         pass
     
     
