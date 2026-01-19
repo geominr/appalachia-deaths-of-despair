@@ -1,10 +1,11 @@
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&display=swap");
-
 body {
   margin: 0;
   padding: 0;
-  font-family: "Overpass", sans-serif;
+  font-family: "Noto Sans", sans-serif;
+  font-optical-sizing: auto;
   font-weight: 400;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
   line-height: 1.6;
 }
 #map {
@@ -18,7 +19,7 @@ body {
   margin: auto;
   min-height: 100vh;
   padding: 2vh 2vh 5vh 2vh;
-  background-color: rgba(36, 36, 41, 0.85);
+  background-color: rgba(36, 36, 41);
   color:#ffffff
 }
 #features {
@@ -93,11 +94,11 @@ a, a:hover, a:visited {
   margin: 0 auto;
 }
 .lefty {
-  width: 33vw;
-  margin-left: 5vw;
+  width: 60vw;
+  margin-left: 0vw;
 }
 .righty {
-  width: 33vw;
+  width: 60vw;
   margin-left: 62vw;
 }
 .light {
@@ -109,20 +110,27 @@ a, a:hover, a:visited {
   background-color: #444;
 }
 .chapter {
-  background-color: rgba(36, 36, 41, 0.95);
+  background: linear-gradient(127deg,rgba(34, 34, 34, 1) 0%, rgba(34, 34, 34, 1) 70%, rgba(34, 34, 34, 0) 100%);
   color:#ffffff
 }
 .step {
-  padding-bottom: 50vh;
   opacity: 0.25;
+
+  /* key: make each step a scroll container */
+  position: relative;
+  min-height: 120vh;   /* > 100vh so you have scroll room before the next step */
+  padding-bottom: 0;   /* remove the old spacer */
 }
+
 .step.active {
-  opacity: 0.9;
+  opacity: 1;
 }
-.step div {
-  padding: 25px 40px;
-  line-height: 25px;
-  font-size: 16px;
+
+/* pin the chapter content */
+.step .chapter {
+  position: sticky;
+  top: 0;              /* “stuck to the top” */
+  padding: 25px 40px;  /* move your old .step div padding here */
 }
 .step img {
   width: 100%;
@@ -133,15 +141,47 @@ a, a:hover, a:visited {
   position: fixed;
   background-color: rgba(36, 36, 41, 0.95);
   padding: 0px 20px 20px 10px;
-  border-radius: 12px;
-  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.5);
   max-width: 140px;
-  bottom: 20px;
-  right: 20px;
+  top: 0px;
+  right: 0px;
 }
 .legend-overlay h4 {
   margin: 10px 0px 5px 0px;
 }
+
+/* give the legend box enough width for a horizontal bar */
+.legend-overlay {
+  max-width: 260px; /* was 140px */
+}
+
+/* the gradient bar itself */
+.legend-gradient-bar {
+  width: 220px;
+  height: 14px;
+  border-radius: 999px;
+  margin: 10px 0 6px 0;
+  box-shadow: 0.5px 0.5px 0.5px rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* labels under the bar */
+.legend-gradient-labels {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  font-size: 0.75em;
+  line-height: 1;
+  opacity: 0.95;
+}
+
+/* make intermediate ticks less visually loud (optional) */
+.legend-gradient-tick {
+  white-space: nowrap;
+}
+.legend-gradient-tick:not(:first-child):not(:last-child) {
+  opacity: 0.6;
+}
+
 
 .legend-item {
   display: inline-block;
@@ -252,4 +292,93 @@ button:-moz-focusring,
 }
 .cu-button:hover {
   background-color: #fac756;
+}
+
+/* Edit Mode Styles */
+#edit-mode-controls {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  gap: 10px;
+}
+
+.edit-mode-btn {
+  background-color: #164e87;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.edit-mode-btn:hover {
+  background-color: #0f3a66;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.edit-mode-btn.active {
+  background-color: #d32f2f;
+}
+
+.edit-mode-btn.active:hover {
+  background-color: #b71c1c;
+}
+
+.save-btn {
+  background-color: #2e7d32;
+}
+
+.save-btn:hover {
+  background-color: #1b5e20;
+}
+
+.edit-mode .chapter {
+  outline: 2px dashed rgba(255, 255, 255, 0.5);
+  position: relative;
+}
+
+.edit-mode .editable-content {
+  outline: 2px solid rgba(76, 175, 80, 0.5);
+  padding: 2px;
+  margin: 2px;
+  border-radius: 3px;
+  min-height: 1em;
+}
+
+.edit-mode .editable-content:focus {
+  outline: 2px solid #4caf50;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.edit-mode .chapter-title {
+  outline: 2px solid rgba(76, 175, 80, 0.5);
+  padding: 2px;
+  margin: 2px;
+  border-radius: 3px;
+  min-height: 1em;
+  display: block;
+}
+
+.edit-mode .chapter-title:focus {
+  outline: 2px solid #4caf50;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.edit-mode-label {
+  position: absolute;
+  top: -20px;
+  left: 0;
+  font-size: 10px;
+  color: #4caf50;
+  font-weight: 600;
+  text-transform: uppercase;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 2px 6px;
+  border-radius: 3px;
 }
